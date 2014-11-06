@@ -7,48 +7,23 @@
 
 // include the pinchangeint library - see the links in the related topics section above for details
 #include <PinChangeInt.h>
-
-// Assign your channel in pins (PCINT0 and PCINT1)
-#define THROTTLE_IN_PIN 8
-#define STEERING_IN_PIN 9
-
-// These bit flags are set in bUpdateFlagsShared to indicate which
-// channels have new signals bits (1,2,4,8,etc)
-#define THROTTLE_FLAG 1
-#define STEERING_FLAG 2
+#include <avr/pgmspace.h>
+#include "Morko.h"
 
 
-// holds the update flags defined above
-volatile uint8_t bUpdateFlagsShared;
-
-// shared variables are updated by the ISR and read by loop.
-// In loop we immediatley take local copies so that the ISR can keep ownership of the 
-// shared ones. To access these in loop
-// we first turn interrupts off with noInterrupts
-// we take a copy to use in loop and the turn interrupts back on
-// as quickly as possible, this ensures that we are always able to receive new signals
-volatile uint16_t unThrottleInShared;
-volatile uint16_t unSteeringInShared;
-
-
-// These are used to record the rising edge of a pulse in the calcInput functions
-// They do not need to be volatile as they are only used in the ISR. If we wanted
-// to refer to these in loop and the ISR then they would need to be declared volatile
-uint32_t ulThrottleStart;
-uint32_t ulSteeringStart;
 
 
 void setup()
 {
   Serial.begin(9600);
+  inputString.reserve(200);
   
-  Serial.println("multiChannels");
 
   // using the PinChangeInt library, attach the interrupts
   // used to read the channels
   PCintPort::attachInterrupt(THROTTLE_IN_PIN, calcThrottle,CHANGE); 
-  PCintPort::attachInterrupt(STEERING_IN_PIN, calcSteering,CHANGE); 
-
+  PCintPort::attachInterrupt(STEERING_IN_PIN, calcSteering,CHANGE);
+  delay(5000);
 }
 
 void loop()
@@ -100,12 +75,6 @@ void loop()
   // variables unAuxInShared, unThrottleInShared, unSteeringInShared are always owned by 
   // the interrupt routines and should not be used in loop
   
-  // the following code provides simple pass through 
-  // this is a good initial test, the Arduino will pass through
-  // receiver input as if the Arduino is not there.
-  // This should be used to confirm the circuit and power
-  // before attempting any custom processing in a project.
-  
   // we are checking to see if the channel value has changed, this is indicated  
   // by the flags. For the simple pass through we don't really need this check,
   // but for a more complex project where a new signal requires significant processing
@@ -121,6 +90,10 @@ void loop()
   {
     Serial.print("Steer: ");
     Serial.println(unSteeringIn);
+  }
+  if(stringComplete)
+  {
+    serialMenu();
   }
   delay(200);
   bUpdateFlags = 0;
@@ -158,4 +131,31 @@ void calcSteering()
   }
 }
 
+
+
+void serialEvent() {
+  while (Serial.available()) {
+    // get the new byte:
+    char inChar = (char)Serial.read();
+    // add it to the inputString:
+    inputString += inChar;
+    // if the incoming character is a newline, set a flag
+    // so the main loop can do something about it:
+    if (inChar == '\n') {
+      stringComplete = true;
+    }
+  }
+}
+
+void serialMenu()
+{
+  //while(
+  for (int i = 0; i < 6; i++)
+  {	
+    strcpy_P(buffer, (PGM_P)pgm_read_word(&(mainTable[i]))); // Necessary casts and dereferencing, just copy. 
+    Serial.print( buffer );
+    delay( 10 );
+  }
+  stringComplete = false;
+}
 
