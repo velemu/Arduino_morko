@@ -54,10 +54,10 @@ PGM_P const mainTable[] PROGMEM  = 	   // change "string_table" name to suit
   main_5 };
 
 const char lisa_0[] PROGMEM = "";   // "String 0" etc are strings to store - change to suit.
-const char lisa_1[] PROGMEM = "";
-const char lisa_2[] PROGMEM = "";
-const char lisa_3[] PROGMEM = "Ei asetuksia viela\n";
-const char lisa_4[] PROGMEM = "5 = Takaisin\n";
+const char lisa_1[] PROGMEM = "1 = RESERVED\n";
+const char lisa_2[] PROGMEM = "2 = RESERVED\n";
+const char lisa_3[] PROGMEM = "3 = RESERVED\n";
+const char lisa_4[] PROGMEM = "4 = Takaisin\n";
 const char lisa_5[] PROGMEM = "Anna valintasi:\n";
 
 PGM_P const lisaTable[] PROGMEM  = 	   // change "string_table" name to suit
@@ -72,11 +72,11 @@ PGM_P const lisaTable[] PROGMEM  = 	   // change "string_table" name to suit
 const char pwm_0[] PROGMEM = "PWM-taajuuden valinta\n";   // "String 0" etc are strings to store - change to suit.
 const char pwm_1[] PROGMEM = "1 = 490 Hz\n";
 const char pwm_2[] PROGMEM = "2 = 3920 Hz\n";
-const char pwm_3[] PROGMEM = "3 = \n";
-const char pwm_4[] PROGMEM = "4 = \n";
+const char pwm_3[] PROGMEM = "3 = 31370 Hz\n";
+const char pwm_4[] PROGMEM = "4 = Takaisin\n";
 const char pwm_5[] PROGMEM = "Anna valintasi:\n";
 
-PGM_P const lisaTable[] PROGMEM  = 	   // change "string_table" name to suit
+PGM_P const pwmTable[] PROGMEM  = 	   // change "string_table" name to suit
 {   
   pwm_0,
   pwm_1,
@@ -84,6 +84,22 @@ PGM_P const lisaTable[] PROGMEM  = 	   // change "string_table" name to suit
   pwm_3,
   pwm_4,
   pwm_5 };  
+  
+const char status_0[] PROGMEM = "Toimintatilan valinta:\n";   // "String 0" etc are strings to store - change to suit.
+const char status_1[] PROGMEM = "1 = Diff moottorit (Konehirvi)\n";
+const char status_2[] PROGMEM = "2 = Moottori + Servo\n";
+const char status_3[] PROGMEM = "3 = RESERVED\n";
+const char status_4[] PROGMEM = "4 = Takaisin\n";
+const char status_5[] PROGMEM = "Anna valintasi:\n";
+
+PGM_P const statusTable[] PROGMEM  = 	   // change "string_table" name to suit
+{   
+  status_0,
+  status_1,
+  status_2,
+  status_3,
+  status_4,
+  status_5 };  
 
 
 char buffer[30];    // make sure this is large enough for the largest string it must hold
