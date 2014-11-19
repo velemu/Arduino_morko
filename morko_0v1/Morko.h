@@ -35,6 +35,7 @@ uint32_t ulSteeringStart;
 // UART comm stuff
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
+uint8_t uiState = 0;
 
 
 const char main_0[] PROGMEM = "1 = Aseta PWM taajuus\n";   // "String 0" etc are strings to store - change to suit.

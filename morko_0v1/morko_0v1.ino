@@ -95,7 +95,7 @@ void loop()
   {
     serialMenu();
   }
-  delay(200);
+  delay(1);
   bUpdateFlags = 0;
 }
 
@@ -149,13 +149,99 @@ void serialEvent() {
 
 void serialMenu()
 {
-  //while(
-  for (int i = 0; i < 6; i++)
-  {	
-    strcpy_P(buffer, (PGM_P)pgm_read_word(&(mainTable[i]))); // Necessary casts and dereferencing, just copy. 
-    Serial.print( buffer );
-    delay( 10 );
+  // Sarjaterminaalivalikon paatilakone
+  switch (uiState){
+	// Ensimmäisenä näytetaan vain paavalikko. Ei tulkita mitaan
+	case 0: 
+		printMenu(0);
+		uiState = 1;
+		break;
+	// Case 1: Paavalikon tilamuutokset
+	case 1:
+		switch (inputString[0]){
+			case '1':
+				printMenu(1);
+				uiState = 2;
+				break;
+			case '2':
+				printMenu(2);
+				uiState = 3;
+				break;
+			case '3':
+				printMenu(3);
+				uiState = 4;
+				break;
+			case '4':
+				Serial.println("Debugmode paalla");
+				uiState = 5;
+				break;
+			case '5':
+				Serial.println("Kaynnistyy uudestaan");
+				uiState = 0;
+				setup();
+				break;
+			default:
+				Serial.println("Epakelpo valinta");
+				break;
+		}
+	// Case 2: PWM-taajuus valikon tilamuutokset
+	case 2:
+		uiState = 0;
+		break;
+	// Case 3: Toimintamoodivalikon tilamuutokset
+	case 3:
+		uiState = 0;
+		break;
+	// Case 4: Lisa-asetusvalikon tilamuutokset
+	case 4:
+		uiState = 0;
+		break;
+	// Case 5: Debugmoodi, mikä tahansa valinta palauttaa normaaliin toimintatilaan.
+	case 5:
+		uiState = 0;
+		break;
+	default:
+		Serial.println("Should not see mee!");
+		break;
   }
+  inputString = "";
   stringComplete = false;
 }
 
+void printMenu(uint8_t menuId){
+	
+	switch (menuId){
+		case 0: // Tulostaa paavalikon
+			for (int i = 0; i < 6; i++)
+			{	
+				strcpy_P(buffer, (PGM_P)pgm_read_word(&(mainTable[i]))); // Necessary casts and dereferencing, just copy. 
+				Serial.print( buffer );
+				delay( 10 );
+			}
+			break;
+		case 1: // Tulostaa pwmvalikon
+			for (int i = 0; i < 6; i++)
+			{	
+				strcpy_P(buffer, (PGM_P)pgm_read_word(&(pwmTable[i]))); // Necessary casts and dereferencing, just copy. 
+				Serial.print( buffer );
+				delay( 10 );
+			}
+			break;
+		case 2: // tulostaa tilavalikon
+			for (int i = 0; i < 6; i++)
+			{	
+				strcpy_P(buffer, (PGM_P)pgm_read_word(&(statusTable[i]))); // Necessary casts and dereferencing, just copy. 
+				Serial.print( buffer );
+				delay( 10 );
+			}
+			break;
+		case 3: // tulostaa lisa-asetusvalikon
+			for (int i = 0; i < 6; i++)
+			{	
+				strcpy_P(buffer, (PGM_P)pgm_read_word(&(lisaTable[i]))); // Necessary casts and dereferencing, just copy. 
+				Serial.print( buffer );
+				delay( 10 );
+			}
+			break;
+	}
+}
